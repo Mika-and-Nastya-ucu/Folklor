@@ -11,7 +11,7 @@
 @media(max-width:560px){.topbar{height:64px;padding:0 17px}.brand-name{font-size:18px}.toplinks{gap:8px}.toplinks button{font-size:9px}.hero{padding:48px 22px}.hero h1{font-size:40px}.shell{padding:25px 17px 50px}.nav{grid-template-columns:1fr 1fr}.navbtn{font-size:10px;padding:10px 8px}.cards{grid-template-columns:1fr}.heading h2{font-size:29px}.drawer{padding:22px 19px}.drawer h2{font-size:32px}.lyrics{font-size:16px}.footer{flex-direction:column;padding:20px}}
 </style></head><body>
 <header class="topbar"><a class="brand" href="#"><span class="brand-mark">♫</span><span><span class="brand-name">Фольклорні пісні Івано-Франківщини. Покуття</span></span></a><nav class="toplinks"><button data-page="songs">КОЛЕКЦІЯ</button><button data-page="articles">СТАТТІ</button></nav></header>
-<section class="hero"><div class="hero-inner"><div class="eyebrow">Жива традиція · голоси поколінь</div><h1>Пісня зберігає те,<br>що не записати словами.</h1><p>Цифрова збірка українських народних пісень, текстів і дослідницьких матеріалів. Архів, у якому кожен запис має свою історію.</p></div></section>
+<section class="hero"><div class="hero-inner"><h1>Пісня зберігає те,<br>що не записати словами.</h1><p>Цифрова збірка українських народних пісень, текстів і дослідницьких матеріалів Покуття (Івано-Франківщини)</p></div></section>
 <main class="shell"><aside class="sidebar"><div class="side-label">Розділи архіву</div><nav class="nav" id="nav">
 <button class="navbtn active" data-section="Загальне">Загальне <small></small></button>
 <button class="navbtn" data-section="Колядки і щедрівки">Колядки і щедрівки <small></small></button>
@@ -23,7 +23,7 @@
 <button class="navbtn" data-section="Статті">Статті <small></small></button>
 </nav></aside>
 <section><div class="heading"><div><div class="kicker" id="kicker">Фольклорна колекція</div><h2 id="heading">Загальне</h2></div><div class="count" id="count"></div></div><label class="search"><span>⌕</span><input id="search" placeholder="Пошук за назвою або текстом пісні…"></label><div class="filters" id="filters"></div><div id="content" class="cards"></div></section></main>
-<footer class="footer"><span>© 2026 · Співоча пам’ять</span><span>Збереження та популяризація української пісенної традиції</span></footer>
+<footer class="footer"><span>Збереження та популяризація української пісенної традиції</span></footer>
 <div class="overlay" id="overlay"><article class="drawer"><div class="drawerhead"><button class="back" id="back">← ДО РОЗДІЛУ</button><button class="close" id="close">×</button></div><div id="detail"></div></article></div>
 <script>
 let songs=[],articles=[];let section='Загальне',query='';const $=id=>document.getElementById(id);const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
