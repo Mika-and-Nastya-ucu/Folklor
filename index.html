@@ -20,24 +20,73 @@
 <button class="navbtn" data-section="Соціально-побутові">Соціально-побутові <small></small></button>
 <button class="navbtn" data-section="Календарно-обрядові">Календарно-обрядові <small></small></button>
 <button class="navbtn" data-section="Родинно-обрядові">Родинно-обрядові <small></small></button>
+<button class="navbtn" data-section="Балади">Балади <small></small></button>
 <button class="navbtn" data-section="Статті">Статті <small></small></button>
 </nav></aside>
 <section><div class="heading"><div><div class="kicker" id="kicker">Фольклорна колекція</div><h2 id="heading">Загальне</h2></div><div class="count" id="count"></div></div><label class="search"><span>⌕</span><input id="search" placeholder="Пошук за назвою або текстом пісні…"></label><div class="filters" id="filters"></div><div id="content" class="cards"></div></section></main>
 <footer class="footer"><span>Збереження та популяризація української пісенної традиції</span></footer>
 <div class="overlay" id="overlay"><article class="drawer"><div class="drawerhead"><button class="back" id="back">← ДО РОЗДІЛУ</button><button class="close" id="close">×</button></div><div id="detail"></div></article></div>
 <script>
-let songs=[],articles=[];let section='Загальне',query='';const $=id=>document.getElementById(id);const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const genres=['Колядки і щедрівки','Вінчування','Родинно-побутові','Соціально-побутові','Календарно-обрядові','Родинно-обрядові'];
+let songs=[],articles=[];
+let section='Загальне',query='';
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const genres=['Колядки і щедрівки','Вінчування','Родинно-побутові','Соціально-побутові','Календарно-обрядові','Родинно-обрядові', 'Балади'];
 function setActive(){document.querySelectorAll('[data-section]').forEach(b=>b.classList.toggle('active',b.dataset.section===section));}
-function openDrawer(html){$('detail').innerHTML=html;$('overlay').classList.add('show');document.body.style.overflow='hidden';}
-function closeDrawer(){$('overlay').classList.remove('show');document.body.style.overflow='';}
+function openDrawer(html){$('detail').innerHTML=html;
+$('overlay').classList.add('show');
+document.body.style.overflow='hidden';}
+function closeDrawer(){$('overlay').classList.remove('show');
+document.body.style.overflow='';}
 function showArticle(a){openDrawer(`<span class="tag">Стаття</span><h2>${esc(a.title)}</h2><div class="article-body">${a.paragraphs.map(p=>`<p>${esc(p)}</p>`).join('')}</div>`);}
-function showSong(s){let note='';if(s.notes){let path='assets/'+encodeURIComponent(s.notes);note=s.kind==='image'?`<img class="score" src="${path}" alt="Нотний запис"><a class="action" href="${path}" target="_blank">Відкрити нотний запис</a>`:`<iframe class="pdf" src="${path}" title="Ноти"></iframe><a class="action" href="${path}" target="_blank">Відкрити PDF</a>`;}openDrawer(`<span class="tag">${esc(s.genre)}</span><h2>${esc(s.title)}</h2><div class="meta">${esc(s.subtitle)}${s.meta?'<br>'+esc(s.meta):''}</div><div class="lyrics-title">Текст пісні</div>${s.lyrics?`<div class="lyrics">${esc(s.lyrics)}</div>`:'<p>Текст пісні ще не додано.</p>'}<div class="lyrics-title">Нотний матеріал</div>${note||'<p>Нотний запис для цієї пісні поки не додано.</p>'}`);}
-function render(){setActive();$('heading').textContent=section;$('kicker').textContent=section==='Статті'?'Дослідницькі матеріали':'Фольклорна колекція';$('filters').innerHTML='';let q=query.toLocaleLowerCase('uk');let list=[];
-if(section==='Статті'){ $('content').className='article-list';list=articles.filter(a=>(a.title+' '+a.paragraphs.join(' ')).toLocaleLowerCase('uk').includes(q));$('count').textContent=list.length+' статті';$('content').innerHTML=list.map(a=>`<article class="article-card" data-article="${esc(a.id)}"><h3>${esc(a.title)}</h3><p>${esc((a.paragraphs[0]||'').slice(0,260))}${(a.paragraphs[0]||'').length>260?'…':''}</p></article>`).join('')||'<div class="empty"><strong>Нічого не знайдено</strong>Змініть пошуковий запит.</div>';$('content').querySelectorAll('[data-article]').forEach(el=>el.onclick=()=>showArticle(articles.find(a=>a.id===el.dataset.article)));return;}
-$('content').className='cards';if(section==='Загальне'){list=songs.filter(s=>(s.title+' '+s.lyrics+' '+s.genre).toLocaleLowerCase('uk').includes(q));$('count').textContent=list.length+' пісень';}
-else {list=songs.filter(s=>s.genre===section&&(s.title+' '+s.lyrics+' '+s.subtitle+' '+s.meta).toLocaleLowerCase('uk').includes(q));$('count').textContent=list.length+' пісень';}
-$('content').innerHTML=list.map(s=>`<article class="song" data-id="${esc(s.id)}"><span class="tag">${esc(s.genre)}</span><h3>${esc(s.title)}</h3><p>${esc(s.subtitle)}${s.meta?' · '+esc(s.meta):''}</p><div class="songfoot"><span>${s.notes?'Є нотний матеріал':'Текстовий запис'}</span><b>ВІДКРИТИ ↗</b></div></article>`).join('')||'<div class="empty"><strong>У цьому розділі поки немає записів</strong>Перевірте інший розділ або пошуковий запит.</div>';$('content').querySelectorAll('[data-id]').forEach(el=>el.onclick=()=>showSong(songs.find(s=>s.id===el.dataset.id)));}
-document.querySelectorAll('[data-section]').forEach(b=>b.onclick=()=>{section=b.dataset.section;query='';$('search').value='';render();});document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>{section=b.dataset.page==='articles'?'Статті':'Загальне';query='';$('search').value='';render();});$('search').addEventListener('input',e=>{query=e.target.value;render();});$('close').onclick=closeDrawer;$('back').onclick=closeDrawer;$('overlay').addEventListener('click',e=>{if(e.target===$('overlay'))closeDrawer();});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer();});
-Promise.all([fetch('songs.json').then(r=>{if(!r.ok)throw Error('songs.json');return r.json()}),fetch('articles.json').then(r=>{if(!r.ok)throw Error('articles.json');return r.json()})]).then(([s,a])=>{songs=s;articles=a;document.querySelectorAll('[data-section]').forEach(b=>{let n=b.dataset.section==='Загальне'?songs.length:b.dataset.section==='Статті'?articles.length:songs.filter(x=>x.genre===b.dataset.section).length;b.querySelector('small').textContent=n||'';});render();}).catch(err=>{$('content').innerHTML='<div class="empty"><strong>Не вдалося завантажити матеріали</strong>Переконайтеся, що songs.json та articles.json лежать поруч із index.html. Запустіть сайт через Live Server.</div>';console.error(err);});
+function showSong(s){let note='';
+if(s.notes){let path='assets/'+encodeURIComponent(s.notes);
+note=s.kind==='image'?`<img class="score" src="${path}" alt="Нотний запис"><a class="action" href="${path}" target="_blank">Відкрити нотний запис</a>`:`<iframe class="pdf" src="${path}" title="Ноти"></iframe><a class="action" href="${path}" target="_blank">Відкрити PDF</a>`;}
+openDrawer(`<span class="tag">${esc(s.genre)}</span><h2>${esc(s.title)}</h2><div class="meta">${esc(s.subtitle)}${s.meta?'<br>'+esc(s.meta):''}</div><div class="lyrics-title">Текст пісні</div>${s.lyrics?`<div class="lyrics">${esc(s.lyrics)}</div>`:'<p>Текст пісні ще не додано.</p>'}<div class="lyrics-title">Нотний матеріал</div>${note||'<p>Нотний запис для цієї пісні поки не додано.</p>'}`);}
+function render(){setActive();
+$('heading').textContent=section;
+$('kicker').textContent=section==='Статті'?'Дослідницькі матеріали':'Фольклорна колекція';
+$('filters').innerHTML='';
+let q=query.toLocaleLowerCase('uk');
+let list=[];
+if(section==='Статті'){ $('content').className='article-list';
+list=articles.filter(a=>(a.title+' '+a.paragraphs.join(' ')).toLocaleLowerCase('uk').includes(q));
+$('count').textContent=list.length+' статті';
+$('content').innerHTML=list.map(a=>`<article class="article-card" data-article="${esc(a.id)}"><h3>${esc(a.title)}</h3><p>${esc((a.paragraphs[0]||'').slice(0,260))}${(a.paragraphs[0]||'').length>260?'…':''}</p></article>`).join('')||'<div class="empty"><strong>Нічого не знайдено</strong>Змініть пошуковий запит.</div>';
+$('content').querySelectorAll('[data-article]').forEach(el=>el.onclick=()=>showArticle(articles.find(a=>a.id===el.dataset.article)));
+return;}
+$('content').className='cards';
+if(section==='Загальне'){list=songs.filter(s=>(s.title+' '+s.lyrics+' '+s.genre).toLocaleLowerCase('uk').includes(q));
+$('count').textContent=list.length+' пісень';}
+else {list=songs.filter(s=>s.genre===section&&(s.title+' '+s.lyrics+' '+s.subtitle+' '+s.meta).toLocaleLowerCase('uk').includes(q));
+$('count').textContent=list.length+' пісень';}
+$('content').innerHTML=list.map(s=>`<article class="song" data-id="${esc(s.id)}"><span class="tag">${esc(s.genre)}</span><h3>${esc(s.title)}</h3><p>${esc(s.subtitle)}${s.meta?' · '+esc(s.meta):''}</p><div class="songfoot"><span>${s.notes?'Є нотний матеріал':'Текстовий запис'}</span><b>ВІДКРИТИ ↗</b></div></article>`).join('')||'<div class="empty"><strong>У цьому розділі поки немає записів</strong>Перевірте інший розділ або пошуковий запит.</div>';
+$('content').querySelectorAll('[data-id]').forEach(el=>el.onclick=()=>showSong(songs.find(s=>s.id===el.dataset.id)));}
+document.querySelectorAll('[data-section]').forEach(b=>b.onclick=()=>{section=b.dataset.section;
+query='';
+$('search').value='';
+render();
+}
+);
+document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>{section=b.dataset.page==='articles'?'Статті':'Загальне';
+query='';
+$('search').value='';
+render();
+});
+$('search').addEventListener('input',e=>{query=e.target.value;
+render();
+});
+$('close').onclick=closeDrawer;
+$('back').onclick=closeDrawer;
+$('overlay').addEventListener('click',e=>{if(e.target===$('overlay'))closeDrawer();
+
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer();});
+Promise.all([fetch('songs.json').then(r=>{if(!r.ok)throw Error('songs.json');return r.json()}),fetch('articles.json').then(r=>{if(!r.ok)throw Error('articles.json');
+return r.json()})]).then(([s,a])=>{songs=s;articles=a;
+document.querySelectorAll('[data-section]').forEach(b=>{let n=b.dataset.section==='Загальне'?songs.length:b.dataset.section==='Статті'?articles.length:songs.filter(x=>x.genre===b.dataset.section).length;
+b.querySelector('small').textContent=n||'';});
+render();
+}).catch(err=>{$('content').innerHTML='<div class="empty"><strong>Не вдалося завантажити матеріали</strong>Переконайтеся, що songs.json та articles.json лежать поруч із index.html. Запустіть сайт через Live Server.</div>';
+console.error(err);});
 </script></body></html>
