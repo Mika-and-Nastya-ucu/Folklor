@@ -98,11 +98,18 @@ body{margin:0;background:var(--bg);
 <div class="overlay" id="overlay"><article class="drawer"><div class="drawerhead"><button class="back" id="back">← ДО РОЗДІЛУ</button><button class="close" id="close">×</button></div><div id="detail"></div></article></div>
 <script>
 let songs=[],articles=[],aboutData=null;
-let section='Про нас',query='';
+let section='Покуття',query='';
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const genres=['Колядки і щедрівки','Вінчування','Родинно-побутові','Соціально-побутові','Календарно-обрядові','Родинно-обрядові', 'Балади'];
-function setActive(){document.querySelectorAll('[data-section]').forEach(b=>b.classList.toggle('active',b.dataset.section===section));}
+function setActive() {
+    document.querySelectorAll('[data-section]').forEach(b => {
+        b.classList.toggle(
+            'active',
+            b.dataset.section === (section === 'Покуття' ? 'Статті' : section)
+        );
+    });
+}
 function openDrawer(html){$('detail').innerHTML=html;
 $('overlay').classList.add('show');
 document.body.style.overflow='hidden';}
@@ -116,7 +123,27 @@ openDrawer(`<span class="tag">${esc(s.genre)}</span><h2>${esc(s.title)}</h2><div
 function render(){setActive();
 $('heading').textContent=section;
 $('kicker').textContent=section==='Статті'?'Дослідницькі матеріали':'Фольклорна колекція';
-$('filters').innerHTML='';
+$('filters').innerHTML='';if (section === 'Покуття') {
+    const a = articles.find(article => article.id === 'pokuttia');
+
+    $('heading').textContent = 'Покуття';
+    $('kicker').textContent = 'Дослідницькі матеріали';
+    $('count').textContent = '';
+    $('content').className = 'article-list';
+
+    if (a) {
+        $('content').innerHTML = `
+            <article class="article-body">
+                <h3>${esc(a.title)}</h3>
+                ${a.paragraphs.map(p => `<p>${esc(p)}</p>`).join('')}
+            </article>
+        `;
+    } else {
+        $('content').innerHTML = '<div class="empty">Статтю «Покуття» не знайдено.</div>';
+    }
+
+    return;
+}
 if(section === 'Про нас') {
     $('content').className = 'article-list';
     $('count').textContent = '';
